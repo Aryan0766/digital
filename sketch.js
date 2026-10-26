@@ -1,27 +1,24 @@
-
 // microphone = the wave you draw with your voice
 // controller = plays notes (and you see the notes as a second wave)
 // sparkles = appear when you are loud
-//
 // Controller: A B X Y = notes, left stick = move, D-pad up / down = octave
 // Click once to start. Allow the microphone when the browser asks.
-
 // variables
 let mic;
-let micAmp;   // measures how loud the mic is (new p5.sound library)
-let micFFT;  // analyses your microphone
+let micAmp; // measures how loud the mic is (new p5.sound library)
+let micFFT; // analyses your microphone
 let synthFFT; // analyses the notes we play
 let osc;
 let started = false;
 
 let x = 500; // circle position
 let y = 300;
-let colorHue = 0;  // current colour (0 - 360)
+let colorHue = 0; // current colour (0 - 360)
 
-let notes = [220, 262, 330, 392];  // A, B, X, Y buttons (Hz)
-let octaveNumber = 0; 
-let octaveMultiplier = 1;           
-let dpadUpWas = false;      
+let notes = [220, 262, 330, 392]; // A, B, X, Y buttons (Hz)
+let octaveNumber = 0;
+let octaveMultiplier = 1;
+let dpadUpWas = false;
 let dpadDownWas = false;
 
 const TRAIL_LENGTH = 250;
@@ -31,7 +28,7 @@ let trailSize = [];
 let trailHue = [];
 
 //setup
-function setup() {
+function setup () {
   createCanvas(1000, 600);
   colorMode(HSB, 360, 100, 100, 100);
   textAlign(CENTER, CENTER);
@@ -46,7 +43,7 @@ function setup() {
 }
 
 // start
-function startEverything() {
+function startEverything () {
   userStartAudio();
 
   mic = new p5.AudioIn();
@@ -66,14 +63,14 @@ function startEverything() {
   started = true;
 }
 
-function mousePressed() {
+function mousePressed () {
   if (started == false) {
     startEverything();
   }
 }
 
 //draw
-function draw() {
+function draw () {
   if (started == false) {
     background(0);
     fill(0, 0, 100);
@@ -85,7 +82,7 @@ function draw() {
   }
 }
 
-function drawGarden() {
+function drawGarden () {
   // dark see through layer so old drawings fade slowly
   noStroke();
   fill(0, 0, 0, 15);
@@ -190,58 +187,52 @@ function drawGarden() {
   for (let k = 0; k < TRAIL_LENGTH; k++) {
     // k = 0 is the oldest circle, k = last is the newest
     let i = (slot + 1 + k) % TRAIL_LENGTH;
-    let fade = map(k, 0, TRAIL_LENGTH, 0, 60);        // older = more see-through
-    let shrink = map(k, 0, TRAIL_LENGTH, 0.3, 1);     // older = smaller
+    let fade = map(k, 0, TRAIL_LENGTH, 0, 60);
+    let shrink = map(k, 0, TRAIL_LENGTH, 0.3, 1);
     fill(trailHue[i], 90, 100, fade);
     ellipse(trailX[i], trailY[i], trailSize[i] * shrink, trailSize[i] * shrink);
   }
 
-  // ----- info text -----
+  //info text
   noStroke();
   fill(0, 0, 100, 70);
   textSize(20);
   text("octave: " + octaveNumber, width / 2, height - 20);
-  // black box behind the FPS so old numbers do not pile up
-  fill(0, 0, 0);
-  rect(0, height - 40, 120, 40);
-  fill(0, 0, 100, 70);
-  textSize(14);
-  text("FPS: " + frameRate().toFixed(0), 60, height - 20);
 
-  // ----- fade the note out when nothing is held -----
+  //fade the note out when nothing is held
   if (noteHeld == false) {
     osc.amp(0, 0.2);
   }
 }
 
-// ---------- notes ----------
-function playNote(i) {
+//notes 
+function playNote (i) {
   switch (i) {
     case 0:
-      colorHue = 0;      // red
+      colorHue = 0; // red
       break;
     case 1:
-      colorHue = 120;    // green
+      colorHue = 120; // green
       break;
     case 2:
-      colorHue = 220;    // blue
+      colorHue = 220; // blue
       break;
     case 3:
-      colorHue = 300;    // purple
+      colorHue = 300; // purple
       break;
   }
   osc.freq(notes[i] * octaveMultiplier);
   osc.amp(0.4, 0.05);
 }
 
-function octaveUp() {
+function octaveUp () {
   if (octaveNumber < 2) {
     octaveNumber++;
     octaveMultiplier *= 2;
   }
 }
 
-function octaveDown() {
+function octaveDown () {
   if (octaveNumber > -2) {
     octaveNumber--;
     octaveMultiplier /= 2;
