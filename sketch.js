@@ -188,3 +188,7 @@ function octaveDown () {
     octaveMultiplier /= 2;
   }
 }
+
+function windowResized () {
+  resizeCanvas(windowWidth, windowHeight);
+}
