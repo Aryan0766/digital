@@ -23,7 +23,7 @@ let dpadDownWas = false;
 
 //setup
 function setup () {
-  createCanvas(1000, 600);
+  createCanvas(windowWidth, windowHeight);
   colorMode(HSB, 360, 100, 100, 100);
   textAlign(CENTER, CENTER);
 
